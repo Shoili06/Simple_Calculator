@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class HomePage extends StatefulWidget {
   @override
@@ -56,11 +57,11 @@ class CalcLayout extends StatelessWidget {
                     child: Container(
                       child: Column(
                         children: <Widget>[
-                          makeButtons("*=_"),
+                          makeButtons("s*@%"),
                           makeButtons("789/"),
                           makeButtons("456X"),
                           makeButtons("123-"),
-                          makeButtons(".0%+")
+                          makeButtons(".0=+")
                         ],
                       ),
                     ),
@@ -82,14 +83,13 @@ class CalcLayout extends StatelessWidget {
           children:
           token.map((e) =>
               CalcButton(
-                keyValue : e == '_' ? "00" : e == '*' ? "Clear" : e ,
+                keyValue : e == '@' ? "+/-" : e == '*' ? "AC" : e == 's'? "√" : e ,
               )
           ).toList(),
         )
     );
   }
 }
-
 
 class _HomePageState extends State<HomePage> {
   String inputString = "";
@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
 
   void onPressed(keyValue){
     switch(keyValue){
-      case "Clear":
+      case "AC":
         op= null;
         prevValue= 0.0;
         value="";
@@ -126,13 +126,25 @@ class _HomePageState extends State<HomePage> {
           inputString = inputString + keyValue;
         });
         break;
+      case "+/-":
+        setState(() {
+          inputString= (double.parse(inputString) * (-1)).toStringAsFixed(0);
+          print(inputString);
+        });
+        break;
+      case "√" :
+        setState(() {
+          inputString = pow(double.parse(inputString),0.5).toStringAsFixed(0);
+          print(inputString);
+        });
+        break;
       case "=":
         if (op != null){
           setState(() {
             switch(op){
               case "+":
                 inputString=
-                    (prevValue + double.parse(value)).toStringAsFixed(0);
+                    (prevValue + double.parse(value)).toStringAsFixed(2);
                 break;
               case "-":
                 inputString=
